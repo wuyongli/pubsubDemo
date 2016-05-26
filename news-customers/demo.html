@@ -1,0 +1,75 @@
+<script type="text/javascript">  
+/* 
+    观察者模式又称为发布者-订阅者模式 
+    实质就是对程序中的某个对象状态进行观察,并且在该对象发生改变时能得到通知 
+     
+    这里用一个报社发送报纸的例子来说明. 
+*/  
+// 报社  
+var Paper = function() {  
+    this.customers = []; // 报社的订阅者  
+}  
+//送报方法  
+Paper.prototype.sendPaper = function(data) {  
+    for(var i=0,len=this.customers.length;i<len;i++) {  
+        this.customers[i].receive(data);  
+    }  
+}  
+  
+// 订阅者  
+var Customer = function(param) {  
+    this.name = param.name;  
+}  
+  
+// 订阅方法  
+Customer.prototype.subscibe = function(paper) {   
+    var customers = paper.customers;  //获得该报纸的订阅者名单
+    var isExist = false;  
+    for(var i=0,len=customers.length;i<len;i++) {  
+        if(customers[i] == this) {  
+            isExist = true;  //如果在该订阅者名单已存在，说明已经订阅
+            break;  
+        }  
+    }  
+  
+    if(!isExist) {  //如果在订阅者名单中不存在，则新增入订阅者名单
+        customers.push(this);  
+    }  
+  
+    return this;  
+}  
+  
+// 接收方法  
+Customer.prototype.receive = function(data) {  
+    console.log(this.name + '接收了' + data.paperName);  
+}  
+  
+  
+// 测试  
+  
+// 申明报社  
+var BeijingPaper = new Paper();  
+var TianjinPaper = new Paper();  
+var ShanghaiPaper = new Paper();  
+  
+// 申明订阅人  
+var Jim = new Customer({name:"Jim"});  
+var Bily = new Customer({name:"Bily"});  
+  
+// 订阅报纸  
+Jim.subscibe(BeijingPaper).subscibe(TianjinPaper); // 订阅了北京日报和天津日报  
+Bily.subscibe(ShanghaiPaper).subscibe(TianjinPaper); // 订阅了上海日报和天津日报  
+  
+// 报社发送报纸  
+BeijingPaper.sendPaper({paperName:'北京日报'});  
+TianjinPaper.sendPaper({paperName:'天津日报'});  
+ShanghaiPaper.sendPaper({paperName:'上海日报'});  
+  
+/* 
+输出: 
+Jim接收了北京日报 
+Jim接收了天津日报 
+Bily接收了天津日报 
+Bily接收了上海日报 
+*/  
+</script>  
